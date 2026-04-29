@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="CleanCo">
+<title>CleanCo</title>
+<style>
+:root{
+  --bg:#0a0a0a;--s1:#161616;--s2:#1e1e1e;--s3:#262626;
+  --b1:rgba(255,255,255,0.06);--b2:rgba(255,255,255,0.12);
+  --t1:#f2f2f2;--t2:#909090;--t3:#555;
+  --green:#4ade80;--gd:rgba(74,222,128,0.1);--gb:rgba(74,222,128,0.28);
+  --blue:#60a5fa;--bd:rgba(96,165,250,0.1);--bb:rgba(96,165,250,0.28);
+  --amber:#fbbf24;--ad:rgba(251,191,36,0.1);--ab:rgba(251,191,36,0.28);
+  --purple:#c084fc;--pd:rgba(192,132,252,0.1);--pb:rgba(192,132,252,0.28);
+  --red:#f87171;--rd:rgba(248,113,113,0.1);--rb:rgba(248,113,113,0.28);
+  --cyan:#22d3ee;--cd:rgba(34,211,238,0.1);--cb:rgba(34,211,238,0.28);
+  --r:12px;--rs:8px;--rf:6px;
+  --font:system-ui,-apple-system,sans-serif;--mono:'Courier New',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--t1);font-family:var(--font);overflow:hidden;font-size:16px}
+input,select,textarea,button{font-family:var(--font);font-size:14px}
+textarea{resize:none}
+select{-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:26px!important}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+.app{display:flex;flex-direction:column;height:100vh}
+.hdr{padding:12px 14px 0;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.logo{font-size:18px;font-weight:700;letter-spacing:-.5px}
+.logo span{color:var(--green)}
+.saving{font-size:11px;color:var(--t3)}
+/* Tabs */
+.tabbar{display:flex;background:var(--s1);border-top:1px solid var(--b1);flex-shrink:0}
+.tab{flex:1;padding:9px 2px 7px;font-size:10px;font-weight:600;color:var(--t3);border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;letter-spacing:.02em}
+.tab svg{width:19px;height:19px;stroke-width:1.8}
+.tab.act{color:var(--green)}
+.tab-dot{width:4px;height:4px;border-radius:50%;background:transparent}
+.tab.act .tab-dot{background:var(--green)}
+/* Content */
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 12px 24px}
+.page{display:none;padding-top:8px}
+.page.act{display:block}
+/* Labels */
+.slabel{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:16px 0 7px 2px}
+.slabel:first-child{margin-top:2px}
+/* Form card */
+.fcard{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+.frow{display:flex;border-bottom:1px solid var(--b1)}
+.frow:last-child{border-bottom:none}
+.frow.two>.ff{flex:1}
+.frow.two>.ff:first-child{border-right:1px solid var(--b1)}
+.ff{display:flex;flex-direction:column;padding:9px 13px}
+.ff label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:4px}
+.ff input,.ff select,.ff textarea{background:none;border:none;color:var(--t1);font-size:14px;outline:none;width:100%;overflow-wrap:break-word;word-break:break-word}
+.ff textarea{line-height:1.5;overflow:hidden;min-height:1.3em}
+.ff input::placeholder,.ff textarea::placeholder{color:var(--t3)}
+.ff select option{background:var(--s2)}
+/* Status */
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;letter-spacing:.03em}
+.bl{background:var(--s3);color:var(--t2);border:1px solid var(--b2)}
+.bq{background:var(--bd);color:var(--blue);border:1px solid var(--bb)}
+.bs{background:var(--pd);color:var(--purple);border:1px solid var(--pb)}
+.bi{background:var(--ad);color:var(--amber);border:1px solid var(--ab)}
+.bc{background:var(--gd);color:var(--green);border:1px solid var(--gb)}
+.bv{background:var(--cd);color:var(--cyan);border:1px solid var(--cb)}
+/* Pills */
+.pills{display:flex;gap:5px;flex-wrap:wrap}
+.pill{padding:5px 11px;font-size:11px;font-weight:500;border:1px solid var(--b2);border-radius:20px;background:none;color:var(--t2);cursor:pointer}
+.pill.on{border-color:var(--gb);background:var(--gd);color:var(--green)}
+/* Line items */
+.licard{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);margin-bottom:8px;overflow:hidden}
+.lihdr{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;cursor:pointer}
+.lihdrl{display:flex;align-items:center;gap:7px;flex:1;min-width:0}
+.litag{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:10px;flex-shrink:0}
+.lidesc{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.liamt{font-size:13px;font-weight:700;font-family:var(--mono);color:var(--green);margin-right:6px;flex-shrink:0}
+.lichev{color:var(--t3);font-size:15px;transition:transform .2s;flex-shrink:0}
+.licard.open .lichev{transform:rotate(180deg)}
+.libody{display:none;padding:0 12px 12px;border-top:1px solid var(--b1)}
+.licard.open .libody{display:block}
+.lifield{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--b1)}
+.lifield:last-child{border-bottom:none}
+.lifield-label{font-size:12px;color:var(--t2);flex:1}
+.lifield select,.lifield input[type=number],.lifield input[type=text]{background:var(--s2);border:1px solid var(--b2);border-radius:var(--rf);color:var(--t1);font-size:13px;padding:5px 8px;outline:none}
+.lifield select{min-width:130px}
+.lifield input[type=number]{width:74px;text-align:right;font-family:var(--mono)}
+.lifield input[type=text]{flex:1}
+.iopills{display:flex;gap:4px}
+.iopill{padding:4px 9px;font-size:11px;font-weight:500;border:1px solid var(--b2);border-radius:20px;background:none;color:var(--t2);cursor:pointer}
+.iopill.on{border-color:var(--bb);background:var(--bd);color:var(--blue)}
+.incbox{background:var(--s2);border:1px solid var(--b1);border-radius:var(--rf);padding:8px 11px;margin:7px 0 3px}
+.inctitle{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
+.incitem{display:flex;gap:6px;font-size:12px;color:var(--t2);padding:2px 0;line-height:1.4}
+.incdot{color:var(--green);flex-shrink:0}
+.litotalrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0 0;margin-top:3px}
+.litotal-label{font-size:12px;color:var(--t2)}
+.litotal-val{font-size:15px;font-weight:700;font-family:var(--mono);color:var(--green)}
+.delbtn{width:100%;margin-top:9px;padding:8px;background:var(--rd);border:1px solid var(--rb);border-radius:var(--rs);color:var(--red);font-size:13px;cursor:pointer}
+.addgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
+.addbtn{padding:10px 8px;border:1px dashed var(--b2);border-radius:var(--r);background:none;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+.addbtn.w{border-color:var(--bb);color:var(--blue)}
+.addbtn.g{border-color:var(--ab);color:var(--amber)}
+.addbtn.s{border-color:var(--gb);color:var(--green)}
+.addbtn.o{border-color:var(--b2);color:var(--t2)}
+/* Discount */
+.disccard{background:var(--rd);border:1px solid var(--rb);border-radius:var(--r);padding:12px;margin-bottom:10px}
+.discrow{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.discrow:last-child{margin-bottom:0}
+.disclabel{font-size:13px;color:var(--t2);flex:1}
+.discin{width:78px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-family:var(--mono);font-size:14px;padding:5px 8px;text-align:right;outline:none}
+.discreason{flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:13px;padding:5px 9px;outline:none}
+.dtbtn{padding:4px 9px;font-size:11px;font-weight:500;border:1px solid var(--b2);border-radius:20px;background:none;color:var(--t3);cursor:pointer}
+.dtbtn.on{background:var(--rd);border-color:var(--rb);color:var(--red)}
+/* Summary */
+.sumcard{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:12px;margin-bottom:10px}
+.sline{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--b1);font-size:13px}
+.sline:last-child{border-bottom:none}
+.sline .sl{color:var(--t2)}.sline .sv{font-family:var(--mono);font-weight:500}
+.sline.disc .sl,.sline.disc .sv{color:var(--red)}
+.grandbox{display:flex;justify-content:space-between;align-items:center;background:var(--gd);border:1px solid var(--gb);border-radius:var(--r);padding:13px 16px;margin-bottom:10px}
+.grandlabel{font-size:14px;font-weight:500;color:var(--green)}
+.grandval{font-size:26px;font-weight:700;font-family:var(--mono);color:var(--green)}
+/* Buttons */
+.btng{width:100%;padding:13px;background:var(--green);color:#071a0e;font-size:14px;font-weight:700;border:none;border-radius:var(--rs);cursor:pointer;margin-bottom:8px}
+.btno{width:100%;padding:12px;background:var(--s1);border:1px solid var(--b2);color:var(--t2);font-size:14px;border-radius:var(--rs);cursor:pointer;margin-bottom:8px}
+.btnsm{padding:6px 13px;font-size:12px;font-weight:500;border-radius:20px;border:none;cursor:pointer}
+.btnsm.g{background:var(--green);color:#071a0e}
+.btnsm.b{background:var(--bd);border:1px solid var(--bb);color:var(--blue)}
+.btnsm.r{background:var(--rd);border:1px solid var(--rb);color:var(--red)}
+.btnsm.a{background:var(--ad);border:1px solid var(--ab);color:var(--amber)}
+.btnsm.o{background:var(--s2);border:1px solid var(--b2);color:var(--t2)}
+/* CRM */
+.crmsearch{width:100%;background:var(--s1);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:10px 13px;outline:none;margin-bottom:10px}
+.crmsearch::placeholder{color:var(--t3)}
+.custcard{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:13px 14px;margin-bottom:8px;cursor:pointer}
+.cctop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.ccname{font-size:15px;font-weight:700}
+.cccontact{font-size:12px;color:var(--t3);margin-top:4px;line-height:1.7;white-space:pre-wrap}
+.ccbot{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.ccq{font-size:11px;color:var(--t3)}
+.cctotal{font-size:13px;font-weight:700;font-family:var(--mono);color:var(--green)}
+/* Calendar */
+.calnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.calmonth{font-size:16px;font-weight:700}
+.calbtn{background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:18px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:12px}
+.caldow{text-align:center;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);padding:4px 0}
+.calday{min-height:44px;background:var(--s1);border-radius:var(--rf);padding:4px 3px;cursor:pointer;border:1px solid transparent}
+.calday.today{border-color:var(--gb)}
+.calday.othermonth{opacity:.3}
+.calday.sel{border-color:var(--green);background:var(--gd)}
+.caldaynum{font-size:12px;font-weight:500;text-align:center;color:var(--t2)}
+.calday.today .caldaynum{color:var(--green);font-weight:700}
+.jobdot{width:5px;height:5px;border-radius:50%;margin:1px auto 0}
+.caljobcard{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rs);padding:11px 13px;margin-bottom:8px;cursor:pointer}
+/* Payroll */
+.ptcard{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+.pthdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer}
+.ptname{font-size:15px;font-weight:700}
+.ptmeta{font-size:11px;color:var(--t3);margin-top:2px}
+.ptbody{display:none;border-top:1px solid var(--b1);padding:0 14px 14px}
+.ptcard.open .ptbody{display:block}
+.ptcard.open .lichev{transform:rotate(180deg)}
+.shiftrow{display:flex;gap:5px;align-items:center;padding:6px 0;border-bottom:1px solid var(--b1)}
+.shiftrow:last-child{border-bottom:none}
+.shiftin{background:var(--s2);border:1px solid var(--b2);border-radius:var(--rf);color:var(--t1);font-family:var(--mono);font-size:12px;padding:4px 5px;outline:none;text-align:center}
+.shifthrs{font-size:12px;font-family:var(--mono);color:var(--green);min-width:34px;text-align:right;flex-shrink:0}
+.shiftdel{background:none;border:none;color:var(--t3);font-size:13px;cursor:pointer;padding:0 2px;flex-shrink:0}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0 8px}
+.stat{background:var(--s2);border-radius:var(--rs);padding:10px 12px}
+.statlabel{font-size:10px;color:var(--t3);margin-bottom:3px}
+.statval{font-size:15px;font-weight:700;font-family:var(--mono)}
+.extragrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
+.extra{display:flex;flex-direction:column;gap:4px}
+.extra label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3)}
+.extra input{background:var(--s2);border:1px solid var(--b2);border-radius:var(--rf);color:var(--t1);font-family:var(--mono);font-size:13px;padding:6px 8px;outline:none;width:100%;text-align:right}
+.netrow{display:flex;justify-content:space-between;align-items:center;background:var(--gd);border:1px solid var(--gb);border-radius:var(--rs);padding:11px 14px;margin-top:4px}
+.netlabel{font-size:13px;font-weight:500;color:var(--green)}
+.netval{font-size:19px;font-weight:700;font-family:var(--mono);color:var(--green)}
+.otbadge{font-size:10px;background:var(--ad);border:1px solid var(--ab);color:var(--amber);border-radius:5px;padding:2px 6px;margin-left:5px}
+.addshiftbtn{width:100%;padding:7px;border:1px dashed var(--b2);border-radius:var(--rs);background:none;color:var(--t3);font-size:12px;cursor:pointer;margin:5px 0}
+.histcard{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;cursor:pointer}
+/* Settings */
+.sg{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);overflow:hidden;margin-bottom:10px}
+.sr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--b1)}
+.sr:last-child{border-bottom:none}
+.srl{font-size:13px;color:var(--t2);flex:1}
+.sri{width:70px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rf);color:var(--t1);font-family:var(--mono);font-size:13px;padding:4px 7px;text-align:right;outline:none}
+.sg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--b1)}
+.sc{background:var(--s1);padding:9px;display:flex;flex-direction:column;gap:4px}
+.sc label{font-size:10px;color:var(--t3)}
+.sc input{width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rf);color:var(--t1);font-family:var(--mono);font-size:13px;padding:4px 6px;text-align:right;outline:none}
+/* Sheet */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:100;display:none;align-items:flex-end}
+.overlay.open{display:flex}
+.sheet{background:var(--s1);border-radius:var(--r) var(--r) 0 0;width:100%;max-height:92vh;overflow-y:auto;padding:18px 16px 28px;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
+.overlay.open .sheet{transform:translateY(0)}
+.shandle{width:36px;height:4px;border-radius:2px;background:var(--b2);margin:0 auto 16px}
+.stitle{font-size:18px;font-weight:700;margin-bottom:4px}
+.ssub{font-size:13px;color:var(--t3);margin-bottom:14px}
+.dsec{margin-bottom:14px}
+.dsectitle{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:7px}
+.drow{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--b1)}
+.drow:last-child{border-bottom:none}
+.drow .dl{color:var(--t2);flex:1}
+.drow .dv{color:var(--t1);font-weight:500;text-align:right;max-width:58%;word-break:break-word}
+.shclose{width:100%;margin-top:14px;padding:12px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t2);font-size:14px;cursor:pointer}
+/* Confirm */
+.confov{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.confov.open{display:flex}
+.confbox{background:var(--s1);border:1px solid var(--b2);border-radius:var(--r);padding:24px 20px;width:100%;max-width:320px;text-align:center}
+.conficon{font-size:34px;margin-bottom:10px}
+.conftitle{font-size:17px;font-weight:700;margin-bottom:6px}
+.confmsg{font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:20px;white-space:pre-line}
+.confactions{display:flex;gap:8px}
+.confbtn{flex:1;padding:12px;border-radius:var(--rs);font-size:14px;font-weight:700;border:none;cursor:pointer}
+.confbtn.p{background:var(--green);color:#071a0e}
+.confbtn.s{background:var(--s2);color:var(--t2);border:1px solid var(--b2)}
+/* Profile */
+.av{width:48px;height:48px;border-radius:50%;background:var(--gd);border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:var(--green);flex-shrink:0}
+.profhdr{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.profname{font-size:18px;font-weight:700}
+.contactentry{background:var(--s2);border-radius:var(--rs);padding:9px 11px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ceinfo{flex:1}
+.cetype{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--t3)}
+.ceval{font-size:13px;color:var(--t1);margin-top:2px;word-break:break-word}
+.cedel{background:none;border:none;color:var(--t3);font-size:14px;cursor:pointer;padding:4px}
+.efield{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.efield label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3)}
+.efield input,.efield textarea,.efield select{background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%}
+.efield textarea{min-height:56px;resize:none;overflow:hidden;line-height:1.5}
+.jobcard{background:var(--s2);border-radius:var(--rs);padding:10px;margin-bottom:7px;cursor:pointer}
+.jctop{display:flex;justify-content:space-between;align-items:flex-start}
+.jcdate{font-size:12px;color:var(--t2)}
+.jcamt{font-size:13px;font-weight:700;font-family:var(--mono);color:var(--green)}
+.jcdesc{font-size:11px;color:var(--t3);margin-top:3px;line-height:1.5}
+.qcard{background:var(--s2);border-radius:var(--rs);padding:10px;margin-bottom:7px;cursor:pointer}
+.qctop{display:flex;justify-content:space-between;align-items:center}
+.qcdate{font-size:12px;color:var(--t2)}
+.qcamt{font-size:14px;font-weight:700;font-family:var(--mono);color:var(--green)}
+.qcitems{font-size:11px;color:var(--t3);margin-top:3px}
+/* Clock */
+.clockrow{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--b1)}
+.clockrow:last-child{border-bottom:none}
+.clockname{font-size:13px;font-weight:500}
+.clocktime{font-size:11px;font-family:var(--mono);color:var(--t2);margin-top:2px}
+/* Toast */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s3);border:1px solid var(--b2);border-radius:20px;padding:8px 16px;font-size:13px;color:var(--t1);z-index:500;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Loading */
+.loading{display:flex;align-items:center;justify-content:center;height:100px;font-size:13px;color:var(--t3)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hdr">
+    <div class="logo">Clean<span>Co</span></div>
+    <div class="saving" id="saving-indicator"></div>
+  </div>
+  <div class="content">
+    <!-- QUOTE -->
+    <div class="page act" id="page-quote">
+      <div class="slabel">Customer</div>
+      <div class="fcard">
+        <div class="frow two"><div class="ff"><label>First Name</label><input type="text" id="c-first" placeholder="Jane"></div><div class="ff"><label>Last Name</label><input type="text" id="c-last" placeholder="Smith"></div></div>
+        <div class="frow"><div class="ff"><label>Phone</label><textarea id="c-phone" rows="1" placeholder="(555) 000-0000" oninput="ae(this)"></textarea></div></div>
+        <div class="frow"><div class="ff"><label>Email</label><textarea id="c-email" rows="1" placeholder="jane@email.com" oninput="ae(this)"></textarea></div></div>
+        <div class="frow"><div class="ff"><label>Address</label><textarea id="c-address" rows="1" placeholder="123 Main St, City, CA" oninput="ae(this)"></textarea></div></div>
+        <div class="frow"><div class="ff"><label>Lead Source</label>
+          <select id="c-source" onchange="handleSrc()"><option value="">Select...</option><option>Google</option><option>Referral</option><option>Door Knock</option><option>Social Media</option><option>Repeat Customer</option><option>Yelp</option><option>Nextdoor</option><option value="Other">Other...</option></select>
+        </div></div>
+        <div class="frow" id="src-custom" style="display:none"><div class="ff"><label>Custom Source</label><input type="text" id="c-src-custom" placeholder="e.g. HOA, Flyer..."></div></div>
+      </div>
+      <div class="slabel">Property Notes</div>
+      <div class="fcard">
+        <div class="frow"><div class="ff"><label>Gate / Access</label><textarea id="p-gate" rows="1" placeholder="Gate code, key location..." oninput="ae(this)"></textarea></div></div>
+        <div class="frow"><div class="ff"><label>Property Instructions</label><textarea id="p-inst" rows="1" placeholder="Dogs in yard, park on street..." oninput="ae(this)"></textarea></div></div>
+        <div class="frow"><div class="ff"><label>Quote Notes</label><textarea id="p-notes" rows="1" placeholder="Anything else to remember..." oninput="ae(this)"></textarea></div></div>
+      </div>
+      <div class="slabel">Line Items</div>
+      <div id="li-container"></div>
+      <div class="addgrid">
+        <button class="addbtn w" onclick="addItem('window')">🪟 Window</button>
+        <button class="addbtn g" onclick="addItem('gutter')">🏠 Gutter</button>
+        <button class="addbtn s" onclick="addItem('solar')">☀️ Solar</button>
+        <button class="addbtn o" onclick="addItem('other')">＋ Custom</button>
+      </div>
+      <div class="slabel">Discount</div>
+      <div class="disccard">
+        <div class="discrow"><span class="disclabel">Type</span><div style="display:flex;gap:4px"><button class="dtbtn on" id="dt-flat" onclick="setDT('flat',this)">$ Flat</button><button class="dtbtn" id="dt-pct" onclick="setDT('pct',this)">% Percent</button></div></div>
+        <div class="discrow"><span class="disclabel" id="disc-label">Amount ($)</span><input class="discin" id="disc-val" type="number" min="0" value="0" oninput="updateSum()"></div>
+        <div class="discrow"><span class="disclabel">Reason</span><input class="discreason" id="disc-reason" type="text" placeholder="e.g. repeat customer"></div>
+      </div>
+      <div class="slabel">Summary</div>
+      <div class="grandbox"><span class="grandlabel">Total</span><span class="grandval" id="grand-total">$0.00</span></div>
+      <div class="sumcard" id="sum-card"><div class="sline"><span class="sl">No items yet</span><span class="sv">—</span></div></div>
+      <button class="btng" onclick="saveQuote()">Save Quote</button>
+      <button class="btno" onclick="clearQuote()">Clear</button>
+      <div style="height:6px"></div>
+    </div>
+    <!-- CALENDAR -->
+    <div class="page" id="page-calendar">
+      <div class="calnav"><button class="calbtn" onclick="calPrev()">‹</button><span class="calmonth" id="cal-label"></span><button class="calbtn" onclick="calNext()">›</button></div>
+      <div class="calgrid" id="cal-grid"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div class="slabel" id="cal-day-label" style="margin:0">Jobs</div>
+        <button class="btnsm g" onclick="openNewJob()">＋ Schedule Job</button>
+      </div>
+      <div id="cal-jobs"></div>
+      <div style="height:6px"></div>
+    </div>
+    <!-- CRM -->
+    <div class="page" id="page-crm">
+      <input class="crmsearch" id="crm-search" type="text" placeholder="Search customers..." oninput="renderCRM()">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btnsm g" onclick="openNewCustomer()">＋ New Customer</button></div>
+      <div id="crm-list"></div>
+    </div>
+    <!-- PAYROLL -->
+    <div class="page" id="page-payroll">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div><div class="slabel" style="margin:0 0 2px">Pay Period</div><div id="pay-period" style="font-size:12px;color:var(--t2)"></div></div>
+        <button class="btnsm g" onclick="finalizePayroll()">Finalize & Save</button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span style="font-size:13px;color:var(--t2)">Technicians</span>
+        <button class="btnsm b" onclick="addTech()">＋ Add Tech</button>
+      </div>
+      <div id="techs-container"></div>
+      <div class="slabel">Pay History</div>
+      <div id="pay-hist"></div>
+      <div style="height:6px"></div>
+    </div>
+    <!-- PRICING -->
+    <div class="page" id="page-pricing">
+      <div class="slabel">Window — Inside + Outside</div>
+      <div class="sg sg3"><div class="sc"><label>Basic</label><input id="sw_basic_both" type="number" value="15"></div><div class="sc"><label>Standard</label><input id="sw_std_both" type="number" value="25"></div><div class="sc"><label>Premium</label><input id="sw_prem_both" type="number" value="50"></div></div>
+      <div class="slabel">Window — Outside Only</div>
+      <div class="sg sg3"><div class="sc"><label>Basic</label><input id="sw_basic_out" type="number" value="10"></div><div class="sc"><label>Standard</label><input id="sw_std_out" type="number" value="15"></div><div class="sc"><label>Premium</label><input id="sw_prem_out" type="number" value="30"></div></div>
+      <div class="slabel">Window — Inside Only</div>
+      <div class="sg sg3"><div class="sc"><label>Basic</label><input id="sw_basic_in" type="number" value="10"></div><div class="sc"><label>Standard</label><input id="sw_std_in" type="number" value="15"></div><div class="sc"><label>Premium</label><input id="sw_prem_in" type="number" value="30"></div></div>
+      <div class="slabel">French Panes — In+Out / Outside / Inside</div>
+      <div class="sg sg3"><div class="sc"><label>Basic In+Out</label><input id="frn_basic_both" type="number" value="3" step="0.5"></div><div class="sc"><label>Std In+Out</label><input id="frn_std_both" type="number" value="4" step="0.5"></div><div class="sc"><label>Prem In+Out</label><input id="frn_prem_both" type="number" value="6" step="0.5"></div></div>
+      <div class="sg sg3"><div class="sc"><label>Basic Outside</label><input id="frn_basic_out" type="number" value="2" step="0.5"></div><div class="sc"><label>Std Outside</label><input id="frn_std_out" type="number" value="3" step="0.5"></div><div class="sc"><label>Prem Outside</label><input id="frn_prem_out" type="number" value="4" step="0.5"></div></div>
+      <div class="sg sg3"><div class="sc"><label>Basic Inside</label><input id="frn_basic_in" type="number" value="2" step="0.5"></div><div class="sc"><label>Std Inside</label><input id="frn_std_in" type="number" value="3" step="0.5"></div><div class="sc"><label>Prem Inside</label><input id="frn_prem_in" type="number" value="4" step="0.5"></div></div>
+      <div class="slabel">Hard Water — Per Sq Ft</div>
+      <div class="sg"><div class="sr"><span class="srl">Rate per sq ft</span><input class="sri" id="hw_rate" type="number" value="5" step="0.5"></div></div>
+      <div class="slabel">Window Multipliers</div>
+      <div class="sg">
+        <div class="sr"><span class="srl">Sliding glass door</span><input class="sri" id="m_sgd" type="number" value="2" step="0.25"></div>
+        <div class="sr"><span class="srl">Garden window</span><input class="sri" id="m_gdn" type="number" value="2" step="0.25"></div>
+        <div class="sr"><span class="srl">Bay window</span><input class="sri" id="m_bay" type="number" value="2" step="0.25"></div>
+        <div class="sr"><span class="srl">Large window</span><input class="sri" id="m_lrg" type="number" value="2" step="0.25"></div>
+        <div class="sr"><span class="srl">Obstructed window</span><input class="sri" id="m_obs" type="number" value="2" step="0.25"></div>
+        <div class="sr"><span class="srl">High window</span><input class="sri" id="m_hgh" type="number" value="1.25" step="0.25"></div>
+        <div class="sr"><span class="srl">Heavily soiled</span><input class="sri" id="m_sol" type="number" value="1.5" step="0.25"></div>
+        <div class="sr"><span class="srl">Post construction</span><input class="sri" id="m_pst" type="number" value="3" step="0.25"></div>
+      </div>
+      <div class="slabel">Gutter — Per Linear Foot</div>
+      <div class="sg sg3"><div class="sc"><label>Basic</label><input id="gut_basic" type="number" value="1.15" step="0.05"></div><div class="sc"><label>Standard</label><input id="gut_std" type="number" value="2.10" step="0.05"></div><div class="sc"><label>Premium</label><input id="gut_prem" type="number" value="3.25" step="0.05"></div></div>
+      <div class="slabel">Solar — Per Panel</div>
+      <div class="sg sg3"><div class="sc"><label>Basic</label><input id="sol_basic" type="number" value="9"></div><div class="sc"><label>Standard</label><input id="sol_std" type="number" value="12"></div><div class="sc"><label>Premium</label><input id="sol_prem" type="number" value="20"></div></div>
+      <button class="btng" onclick="savePricing()">Save Pricing</button>
+      <div style="height:6px"></div>
+    </div>
+  </div>
+  <div class="tabbar">
+    <button class="tab act" onclick="showPage('quote',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h5"/></svg>
+      <span>Quote</span><div class="tab-dot"></div>
+    </button>
+    <button class="tab" onclick="showPage('calendar',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>Calendar</span><div class="tab-dot"></div>
+    </button>
+    <button class="tab" onclick="showPage('crm',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Customers</span><div class="tab-dot"></div>
+    </button>
+    <button class="tab" onclick="showPage('payroll',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      <span>Payroll</span><div class="tab-dot"></div>
+    </button>
+    <button class="tab" onclick="showPage('pricing',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      <span>Pricing</span><div class="tab-dot"></div>
+    </button>
+  </div>
+</div>
+
+<div class="overlay" id="sh-ov" onclick="closeSh(event)">
+  <div class="sheet"><div class="shandle"></div><div id="sh-content"></div><button class="shclose" onclick="closeSh()">Close</button></div>
+</div>
+<div class="confov" id="conf-ov">
+  <div class="confbox">
+    <div class="conficon" id="ci">✅</div>
+    <div class="conftitle" id="ct"></div>
+    <div class="confmsg" id="cm"></div>
+    <div class="confactions">
+      <button class="confbtn s" id="csec" style="display:none" onclick="confS()">Cancel</button>
+      <button class="confbtn p" id="cpri" onclick="confP()">OK</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════
+// STORAGE — uses window.storage API (Claude artifact persistent storage)
+// ════════════════════════════════
+let DB={customers:[],jobs:[],techs:[],payHist:[],pricing:{}};
+let saveTimer=null;
+
+function loadDB(){
+  try{
+    const saved=localStorage.getItem('cleanco_db');
+    if(saved){DB=JSON.parse(saved);}
+    if(!DB.customers)DB.customers=[];
+    if(!DB.jobs)DB.jobs=[];
+    if(!DB.techs)DB.techs=[];
+    if(!DB.payHist)DB.payHist=[];
+    if(!DB.pricing)DB.pricing={};
+  }catch(e){DB={customers:[],jobs:[],techs:[],payHist:[],pricing:{}};}
+  custNextId=DB.customers.reduce((m,x)=>Math.max(m,x.id||0),0)+1;
+  jobNextId=DB.jobs.reduce((m,x)=>Math.max(m,x.id||0),0)+1;
+  techNextId=DB.techs.reduce((m,x)=>Math.max(m,x.id||0),0)+1;
+  if(DB.pricing){
+    Object.entries(DB.pricing).forEach(([k,v])=>{const el=document.getElementById(k);if(el)el.value=v;});
+  }
+}
+
+function schedSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(persistDB,600);
+}
+
+function persistDB(){
+  const ind=document.getElementById('saving-indicator');
+  if(ind)ind.textContent='Saving...';
+  try{
+    localStorage.setItem('cleanco_db',JSON.stringify(DB));
+    if(ind)ind.textContent='✓ Saved';
+    setTimeout(()=>{if(ind)ind.textContent='';},1500);
+  }catch(e){if(ind)ind.textContent='Save error';}
+}
+
+function saveAll(){schedSave();}
+
+// ════════════════════════════════
+// IDs
+// ════════════════════════════════
+let custNextId=1,jobNextId=1,techNextId=1;
+
+// ════════════════════════════════
+// CONSTANTS
+// ════════════════════════════════
+const STATUSES=['Lead','Quoted','Scheduled','In Progress','Completed','Invoiced'];
+const SCLS={Lead:'bl',Quoted:'bq',Scheduled:'bs','In Progress':'bi',Completed:'bc',Invoiced:'bv'};
+const SCOLORS={Lead:'var(--t2)',Quoted:'var(--blue)',Scheduled:'var(--purple)','In Progress':'var(--amber)',Completed:'var(--green)',Invoiced:'var(--cyan)'};
+const WIN_TYPES=['Standard Window','Sliding Glass Door','Garden Window','Bay Window','French Pane (cutup)','Large Window','Obstructed Window','High Window','Heavily Soiled Window','Post Construction Window','Hard Water Treatment'];
+const WIN_INC={
+  basic:{both:{t:'Basic Clean — In+Out',i:['Glass scrub & squeegee','Perimeter glass detail']},outside:{t:'Basic Clean — Outside',i:['Glass scrub & squeegee','Perimeter glass detail']},inside:{t:'Basic Clean — Inside',i:['Glass scrub & squeegee','Perimeter glass detail']}},
+  standard:{both:{t:'Standard Clean — In+Out',i:['Glass scrub & squeegee','Perimeter glass detail','Screens removed, washed & reinstalled','Frames wiped','Sills wiped','Light track wipe','Cobweb removal']},outside:{t:'Standard Clean — Outside',i:['Glass scrub & squeegee','Perimeter glass detail','Screens removed, washed & reinstalled','Frames wiped','Sills wiped','Cobweb removal']},inside:{t:'Standard Clean — Inside',i:['Glass scrub & squeegee','Perimeter glass detail','Screens removed, washed & reinstalled','Frames wiped','Sills wiped','Light track wipe','Cobweb removal']}},
+  premium:{both:{t:'Premium Detail — In+Out',i:['Glass scrub & squeegee','Perimeter glass detail','Screens removed, washed & reinstalled','Frames wiped','Sills wiped','Light track wipe','Cobweb removal','Deeper scrub','Minor hard water removal','Minor paint/adhesive removal','Detailed track cleaning','Screen track blowout']},outside:{t:'Premium Detail — Outside',i:['Glass scrub & squeegee','Perimeter glass detail','Screens removed, washed & reinstalled','Frames wiped','Sills wiped','Cobweb removal','Deeper scrub','Minor hard water removal','Minor paint/adhesive removal','Screen track blowout']},inside:{t:'Premium Detail — Inside',i:['Glass scrub & squeegee','Perimeter glass detail','Screens removed, washed & reinstalled','Frames wiped','Sills wiped','Light track wipe','Cobweb removal','Deeper scrub','Minor paint/adhesive removal','Detailed track cleaning']}}
+};
+const GUT_INC={basic:{t:'Basic Clean',i:['Blow out leaves & debris','Visual downspout check','Debris collection']},standard:{t:'Standard Clean',i:['Blow out leaves & debris','Downspout check','Debris collection','Rinse gutters','Flush downspouts']},premium:{t:'Premium Detail',i:['Blow out leaves & debris','Downspout check','Debris collection','Rinse gutters','Flush downspouts','Remove tiger stripes','Debris bagging & disposal']}};
+const SOL_INC={basic:{t:'Basic Clean',i:['Light scrub for surface dust','Purified water rinse']},standard:{t:'Standard Clean',i:['Light scrub','Purified water rinse','Medium scrub for dirt & droppings']},premium:{t:'Premium Detail',i:['Light scrub','Purified water rinse','Medium scrub','Deeper scrub for heavy buildup','Spot treatment']}};
+
+// ════════════════════════════════
+// HELPERS
+// ════════════════════════════════
+function gv(id,def=0){const e=document.getElementById(id);return e?(parseFloat(e.value)||def):def;}
+function fmt(n){return '$'+Math.max(0,n).toFixed(2);}
+function fmtH(h){const hr=Math.floor(h),mn=Math.round((h-hr)*60);return hr+'h'+(mn>0?' '+mn+'m':'');}
+function fmtDate(d){return(d.getMonth()+1)+'/'+(d.getDate())+'/'+d.getFullYear();}
+function ae(el){el.style.height='auto';el.style.height=el.scrollHeight+'px';}
+function aeAll(){document.querySelectorAll('.ff textarea,.efield textarea').forEach(ae);}
+function tod(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function nowT(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+function ini(name){return(name||'?').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);}
+function getP(){
+  return{
+    win:{basic:{both:gv('sw_basic_both',15),outside:gv('sw_basic_out',10),inside:gv('sw_basic_in',10)},standard:{both:gv('sw_std_both',25),outside:gv('sw_std_out',15),inside:gv('sw_std_in',15)},premium:{both:gv('sw_prem_both',50),outside:gv('sw_prem_out',30),inside:gv('sw_prem_in',30)}},
+    frn:{basic:{both:gv('frn_basic_both',3),outside:gv('frn_basic_out',2),inside:gv('frn_basic_in',2)},standard:{both:gv('frn_std_both',4),outside:gv('frn_std_out',3),inside:gv('frn_std_in',3)},premium:{both:gv('frn_prem_both',6),outside:gv('frn_prem_out',4),inside:gv('frn_prem_in',4)}},
+    hw:gv('hw_rate',5),
+    mult:{'Sliding Glass Door':gv('m_sgd',2),'Garden Window':gv('m_gdn',2),'Bay Window':gv('m_bay',2),'Large Window':gv('m_lrg',2),'Obstructed Window':gv('m_obs',2),'High Window':gv('m_hgh',1.25),'Heavily Soiled Window':gv('m_sol',1.5),'Post Construction Window':gv('m_pst',3)},
+    gut:{basic:gv('gut_basic',1.15),standard:gv('gut_std',2.10),premium:gv('gut_prem',3.25)},
+    sol:{basic:gv('sol_basic',9),standard:gv('sol_std',12),premium:gv('sol_prem',20)}
+  };
+}
+
+// ════════════════════════════════
+// QUOTE BUILDER
+// ════════════════════════════════
+let qItems=[],qId=1,dType='flat';
+
+function calcItem(item,p){
+  if(item.type==='window'){
+    if(item.winType==='Hard Water Treatment')return(item.sqft||0)*p.hw;
+    if(item.winType==='French Pane (cutup)')return(item.qty||0)*p.frn[item.pkg][item.io];
+    return(item.qty||0)*(p.mult[item.winType]||1)*p.win[item.pkg][item.io];
+  }
+  if(item.type==='gutter')return(item.qty||0)*p.gut[item.pkg]+(item.addon||0);
+  if(item.type==='solar')return(item.qty||0)*p.sol[item.pkg]+(item.addon||0);
+  if(item.type==='other')return(item.qty||1)*(item.price||0);
+  return 0;
+}
+function calcDisc(sub){const v=gv('disc-val');return dType==='pct'?Math.min(sub,sub*(v/100)):Math.min(sub,v);}
+function iLabel(item){
+  if(item.type==='window'){
+    if(item.winType==='Hard Water Treatment')return`Hard Water · ${item.sqft||0} sqft`;
+    if(item.winType==='French Pane (cutup)')return`French Pane · ${item.qty||0} panes · ${item.pkg}`;
+    const io=item.io==='both'?'In+Out':item.io==='outside'?'Outside':'Inside';
+    return`${item.winType} (${item.qty||0}) · ${item.pkg} · ${io}`;
+  }
+  if(item.type==='gutter')return`Gutters · ${item.qty||0} ft · ${item.pkg}`;
+  if(item.type==='solar')return`Solar · ${item.qty||0} panels · ${item.pkg}`;
+  if(item.type==='other')return`${item.title||'Custom'} × ${item.qty||1}`;
+  return '';
+}
+function iDesc(item){
+  if(item.type==='window'){
+    if(item.winType==='Hard Water Treatment')return`Hard Water · ${item.sqft||0} sqft`;
+    if(item.winType==='French Pane (cutup)')return`French Pane · ${item.qty||0} · ${item.pkg}`;
+    const io=item.io==='both'?'In+Out':item.io==='outside'?'Outside':'Inside';
+    return`${item.winType} · ${item.qty||0} · ${item.pkg} · ${io}`;
+  }
+  if(item.type==='gutter')return`${item.qty||0} ft · ${item.pkg}`;
+  if(item.type==='solar')return`${item.qty||0} panels · ${item.pkg}`;
+  if(item.type==='other')return item.title||'Custom';
+  return '';
+}
+
+function addItem(type){
+  const id=qId++;
+  let item={id,type};
+  if(type==='window')item={...item,winType:'Standard Window',pkg:'basic',io:'both',qty:0,sqft:0};
+  if(type==='gutter')item={...item,pkg:'basic',qty:0,addon:0};
+  if(type==='solar')item={...item,pkg:'basic',qty:0,addon:0};
+  if(type==='other')item={...item,title:'Custom Item',desc:'',qty:1,price:0};
+  qItems.push(item);renderItems();updateSum();
+  setTimeout(()=>document.getElementById('li_'+id)?.scrollIntoView({behavior:'smooth',block:'center'}),100);
+}
+function delItem(id){qItems=qItems.filter(x=>x.id!==id);renderItems();updateSum();}
+function togItem(id){document.getElementById('li_'+id)?.classList.toggle('open');}
+
+function ofc(id,field){
+  const item=qItems.find(x=>x.id===id);if(!item)return;
+  const el=document.getElementById(`f_${id}_${field}`);if(!el)return;
+  const val=el.value;
+  if(field==='wt')item.winType=val;
+  else if(field==='pkg')item.pkg=val;
+  else if(field==='qty')item.qty=parseFloat(val)||0;
+  else if(field==='sqft')item.sqft=parseFloat(val)||0;
+  else if(field==='addon')item.addon=parseFloat(val)||0;
+  else if(field==='price')item.price=parseFloat(val)||0;
+  else if(field==='title')item.title=val;
+  else if(field==='desc')item.desc=val;
+  if(field==='pkg'||field==='wt')refInc(item);
+  if(field==='wt'){
+    const isHW=val==='Hard Water Treatment';const isFr=val==='French Pane (cutup)';
+    const show=(eid,v)=>{const e=document.getElementById(eid);if(e)e.style.display=v;};
+    show(`io_row_${id}`,isHW?'none':'flex');
+    show(`pkg_row_${id}`,isHW?'none':'flex');
+    show(`qty_row_${id}`,isHW?'none':'flex');
+    show(`sqft_row_${id}`,isHW?'flex':'none');
+    show(`inc_${id}`,isHW?'none':'block');
+    const ql=document.querySelector(`#qty_row_${id} .lifield-label`);if(ql)ql.textContent=isFr?'Number of panes':'Quantity';
+    const tl=document.querySelector(`#li_${id} .litotal-label`);if(tl)tl.textContent=isHW?'Hard water cost':isFr?'French pane cost':'Window cost';
+  }
+  refTotal(item);updateSum();
+  const de=document.querySelector(`#li_${id} .lidesc`);if(de)de.textContent=iDesc(item);
+}
+
+function setIO(id,io){
+  const item=qItems.find(x=>x.id===id);if(!item)return;
+  item.io=io;
+  document.querySelectorAll(`#io_${id} .iopill`).forEach((p,i)=>p.classList.toggle('on',['both','outside','inside'][i]===io));
+  refInc(item);refTotal(item);updateSum();
+  const de=document.querySelector(`#li_${id} .lidesc`);if(de)de.textContent=iDesc(item);
+}
+
+function refInc(item){
+  const box=document.getElementById(`inc_${item.id}`);
+  const tt=document.getElementById(`inctitle_${item.id}`);
+  const ll=document.getElementById(`inclist_${item.id}`);
+  if(!tt||!ll)return;
+  let inc=null;
+  if(item.type==='window'&&item.winType!=='Hard Water Treatment')inc=WIN_INC[item.pkg]?.[item.io];
+  else if(item.type==='gutter')inc=GUT_INC[item.pkg];
+  else if(item.type==='solar')inc=SOL_INC[item.pkg];
+  if(inc){tt.textContent=inc.t;ll.innerHTML=inc.i.map(i=>`<div class="incitem"><span class="incdot">✓</span><span>${i}</span></div>`).join('');if(box)box.style.display='block';}
+}
+
+function refTotal(item){
+  const p=getP();const amt=calcItem(item,p);
+  ['litotal_'+item.id,'litotalhdr_'+item.id].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=fmt(amt);});
+}
+
+function renderItems(){
+  const p=getP();const c=document.getElementById('li-container');
+  if(!qItems.length){c.innerHTML='';return;}
+  const TC={window:'var(--blue)',gutter:'var(--amber)',solar:'var(--green)',other:'var(--t2)'};
+  c.innerHTML=qItems.map(item=>{
+    const amt=calcItem(item,p);const id=item.id;
+    let badge='',body='';
+    if(item.type==='window'){
+      badge='Window';
+      const isHW=item.winType==='Hard Water Treatment';const isFr=item.winType==='French Pane (cutup)';
+      const inc=!isHW?WIN_INC[item.pkg]?.[item.io]:null;
+      body=`
+        <div class="lifield"><span class="lifield-label">Window type</span>
+          <select id="f_${id}_wt" onchange="ofc(${id},'wt')">
+            ${WIN_TYPES.map(t=>`<option value="${t}"${item.winType===t?' selected':''}>${t}</option>`).join('')}
+          </select>
+        </div>
+        <div id="io_row_${id}" class="lifield"${isHW?' style="display:none"':''}>
+          <span class="lifield-label">Service type</span>
+          <div class="iopills" id="io_${id}">
+            <button class="iopill${item.io==='both'?' on':''}" onclick="setIO(${id},'both')">In+Out</button>
+            <button class="iopill${item.io==='outside'?' on':''}" onclick="setIO(${id},'outside')">Outside</button>
+            <button class="iopill${item.io==='inside'?' on':''}" onclick="setIO(${id},'inside')">Inside</button>
+          </div>
+        </div>
+        <div id="pkg_row_${id}" class="lifield"${isHW?' style="display:none"':''}>
+          <span class="lifield-label">Package</span>
+          <select id="f_${id}_pkg" onchange="ofc(${id},'pkg')">
+            <option value="basic"${item.pkg==='basic'?' selected':''}>Basic</option>
+            <option value="standard"${item.pkg==='standard'?' selected':''}>Standard</option>
+            <option value="premium"${item.pkg==='premium'?' selected':''}>Premium</option>
+          </select>
+        </div>
+        <div id="qty_row_${id}" class="lifield"${isHW?' style="display:none"':''}>
+          <span class="lifield-label">${isFr?'Number of panes':'Quantity'}</span>
+          <input type="number" id="f_${id}_qty" value="${item.qty||0}" min="0" oninput="ofc(${id},'qty')">
+        </div>
+        <div id="sqft_row_${id}" class="lifield"${!isHW?' style="display:none"':''}>
+          <span class="lifield-label">Square footage</span>
+          <input type="number" id="f_${id}_sqft" value="${item.sqft||0}" min="0" oninput="ofc(${id},'sqft')">
+        </div>
+        ${isHW?`<div style="padding:4px 0;font-size:11px;color:var(--t3)">$${gv('hw_rate',5).toFixed(2)} per sq ft</div>`:''}
+        <div id="inc_${id}" class="incbox"${isHW?' style="display:none"':''}>
+          <div class="inctitle" id="inctitle_${id}">${inc?.t||''}</div>
+          <div id="inclist_${id}">${inc?inc.i.map(i=>`<div class="incitem"><span class="incdot">✓</span><span>${i}</span></div>`).join(''):''}</div>
+        </div>
+        <div class="litotalrow">
+          <span class="litotal-label">${isHW?'Hard water cost':isFr?'French pane cost':'Window cost'}</span>
+          <span class="litotal-val" id="litotal_${id}">${fmt(amt)}</span>
+        </div>`;
+    }else if(item.type==='gutter'){
+      badge='Gutters';const inc=GUT_INC[item.pkg];
+      body=`
+        <div class="lifield"><span class="lifield-label">Package</span>
+          <select id="f_${id}_pkg" onchange="ofc(${id},'pkg')">
+            <option value="basic"${item.pkg==='basic'?' selected':''}>Basic — $${gv('gut_basic',1.15)}/ft</option>
+            <option value="standard"${item.pkg==='standard'?' selected':''}>Standard — $${gv('gut_std',2.10)}/ft</option>
+            <option value="premium"${item.pkg==='premium'?' selected':''}>Premium — $${gv('gut_prem',3.25)}/ft</option>
+          </select>
+        </div>
+        <div class="lifield"><span class="lifield-label">Linear feet</span><input type="number" id="f_${id}_qty" value="${item.qty||0}" min="0" oninput="ofc(${id},'qty')"></div>
+        <div class="lifield"><span class="lifield-label">Add-on fees ($)</span><input type="number" id="f_${id}_addon" value="${item.addon||0}" min="0" oninput="ofc(${id},'addon')"></div>
+        <div id="inc_${id}" class="incbox">
+          <div class="inctitle" id="inctitle_${id}">${inc.t}</div>
+          <div id="inclist_${id}">${inc.i.map(i=>`<div class="incitem"><span class="incdot">✓</span><span>${i}</span></div>`).join('')}</div>
+        </div>
+        <div class="litotalrow"><span class="litotal-label">Gutter cost</span><span class="litotal-val" id="litotal_${id}">${fmt(amt)}</span></div>`;
+    }else if(item.type==='solar'){
+      badge='Solar';const inc=SOL_INC[item.pkg];
+      body=`
+        <div class="lifield"><span class="lifield-label">Package</span>
+          <select id="f_${id}_pkg" onchange="ofc(${id},'pkg')">
+            <option value="basic"${item.pkg==='basic'?' selected':''}>Basic — $${gv('sol_basic',9)}/panel</option>
+            <option value="standard"${item.pkg==='standard'?' selected':''}>Standard — $${gv('sol_std',12)}/panel</option>
+            <option value="premium"${item.pkg==='premium'?' selected':''}>Premium — $${gv('sol_prem',20)}/panel</option>
+          </select>
+        </div>
+        <div class="lifield"><span class="lifield-label">Panels</span><input type="number" id="f_${id}_qty" value="${item.qty||0}" min="0" oninput="ofc(${id},'qty')"></div>
+        <div class="lifield"><span class="lifield-label">Add-on fees ($)</span><input type="number" id="f_${id}_addon" value="${item.addon||0}" min="0" oninput="ofc(${id},'addon')"></div>
+        <div id="inc_${id}" class="incbox">
+          <div class="inctitle" id="inctitle_${id}">${inc.t}</div>
+          <div id="inclist_${id}">${inc.i.map(i=>`<div class="incitem"><span class="incdot">✓</span><span>${i}</span></div>`).join('')}</div>
+        </div>
+        <div class="litotalrow"><span class="litotal-label">Solar cost</span><span class="litotal-val" id="litotal_${id}">${fmt(amt)}</span></div>`;
+    }else{
+      badge='Custom';
+      body=`
+        <div class="lifield"><span class="lifield-label">Title</span><input type="text" id="f_${id}_title" value="${item.title||''}" placeholder="Service name" oninput="ofc(${id},'title')"></div>
+        <div class="lifield" style="align-items:flex-start;padding-top:9px">
+          <span class="lifield-label" style="padding-top:2px">Description</span>
+          <textarea id="f_${id}_desc" style="flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rf);color:var(--t1);font-size:12px;padding:5px 8px;outline:none;resize:none;overflow:hidden;min-height:1.4em;line-height:1.5" placeholder="What's included..." oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';ofc(${id},'desc')">${item.desc||''}</textarea>
+        </div>
+        <div class="lifield"><span class="lifield-label">Quantity</span><input type="number" id="f_${id}_qty" value="${item.qty||1}" min="0" oninput="ofc(${id},'qty')"></div>
+        <div class="lifield"><span class="lifield-label">Price per unit ($)</span><input type="number" id="f_${id}_price" value="${item.price||0}" min="0" oninput="ofc(${id},'price')"></div>
+        <div class="litotalrow"><span class="litotal-label">Total cost</span><span class="litotal-val" id="litotal_${id}">${fmt(amt)}</span></div>`;
+    }
+    return`<div class="licard open" id="li_${id}">
+      <div class="lihdr" onclick="togItem(${id})">
+        <div class="lihdrl">
+          <span class="litag" style="background:${TC[item.type]}22;color:${TC[item.type]};border:1px solid ${TC[item.type]}44">${badge}</span>
+          <span class="lidesc">${iDesc(item)}</span>
+        </div>
+        <span class="liamt" id="litotalhdr_${id}">${fmt(amt)}</span>
+        <span class="lichev">⌄</span>
+      </div>
+      <div class="libody">${body}<button class="delbtn" onclick="delItem(${id})">Remove</button></div>
+    </div>`;
+  }).join('');
+}
+
+function updateSum(){
+  const p=getP();let sub=0;const lines=[];
+  qItems.forEach(item=>{const amt=calcItem(item,p);if(amt>0)lines.push({l:iLabel(item),v:fmt(amt),cls:''});sub+=amt;});
+  const disc=calcDisc(sub);const grand=sub-disc;
+  if(disc>0){const r=document.getElementById('disc-reason')?.value||'';lines.push({l:dType==='pct'?`Discount (${gv('disc-val')}%${r?' — '+r:''})`:`Discount${r?' — '+r:''}`,v:'−'+fmt(disc),cls:'disc'});}
+  document.getElementById('grand-total').textContent=fmt(grand);
+  const sc=document.getElementById('sum-card');
+  if(!lines.length){sc.innerHTML='<div class="sline"><span class="sl">No items yet</span><span class="sv">—</span></div>';return;}
+  sc.innerHTML=lines.map(x=>`<div class="sline ${x.cls}"><span class="sl">${x.l}</span><span class="sv">${x.v}</span></div>`).join('')+`<div class="sline" style="border-top:1px solid var(--b2);margin-top:4px;padding-top:7px"><span class="sl" style="font-weight:700;color:var(--t1)">Total</span><span class="sv" style="color:var(--green)">${fmt(grand)}</span></div>`;
+}
+
+function setDT(t,btn){dType=t;document.querySelectorAll('.dtbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.getElementById('disc-label').textContent=t==='pct'?'Amount (%)':'Amount ($)';updateSum();}
+function handleSrc(){document.getElementById('src-custom').style.display=document.getElementById('c-source').value==='Other'?'flex':'none';}
+
+function saveQuote(){
+  const p=getP();let sub=0;qItems.forEach(item=>sub+=calcItem(item,p));
+  const disc=calcDisc(sub);const grand=sub-disc;
+  const first=document.getElementById('c-first').value.trim();
+  const last=document.getElementById('c-last').value.trim();
+  const name=(first||last)?(first+' '+last).trim():'Customer';
+  const src=document.getElementById('c-source').value;
+  const source=src==='Other'?document.getElementById('c-src-custom').value.trim()||'Other':src;
+  let cust=DB.customers.find(c=>c.name===name);
+  if(!cust){
+    cust={id:custNextId++,name,status:'Lead',contacts:[],address:document.getElementById('c-address').value.trim(),source,notes:'',property:{gate:document.getElementById('p-gate').value.trim(),instructions:document.getElementById('p-inst').value.trim()},quotes:[],jobs:[],createdAt:new Date().toISOString()};
+    const ph=document.getElementById('c-phone').value.trim(),em=document.getElementById('c-email').value.trim();
+    if(ph)cust.contacts.push({type:'Phone',value:ph});if(em)cust.contacts.push({type:'Email',value:em});
+    DB.customers.push(cust);
+  }
+  const quote={id:Date.now(),date:tod(),grand:fmt(grand),subtotal:fmt(sub),disc:disc>0?fmt(disc):null,discReason:document.getElementById('disc-reason').value.trim()||null,discType:dType,discVal:gv('disc-val'),items:JSON.parse(JSON.stringify(qItems)),pricingSnapshot:p,notes:document.getElementById('p-notes').value.trim()};
+  cust.quotes.push(quote);cust.status='Quoted';saveAll();
+  showConf({icon:'✅',title:'Quote Saved!',msg:`${name}'s quote for ${fmt(grand)} saved to CRM.`,primaryLabel:'Great!'});
+}
+
+function clearQuote(){showConf({icon:'🗑️',title:'Clear Quote?',msg:'Clear all fields and line items?',primaryLabel:'Clear',secondaryLabel:'Cancel',onPrimary:()=>{qItems=[];qId=1;['c-first','c-last','c-src-custom','disc-reason'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['c-phone','c-email','c-address','p-gate','p-inst','p-notes'].forEach(id=>{const el=document.getElementById(id);if(el){el.value='';ae(el);}});document.getElementById('c-source').value='';document.getElementById('src-custom').style.display='none';document.getElementById('disc-val').value=0;renderItems();updateSum();}});}
+
+// ════════════════════════════════
+// CALENDAR
+// ════════════════════════════════
+let calDate=new Date(),calSel=tod();
+function calPrev(){calDate.setMonth(calDate.getMonth()-1);renderCal();}
+function calNext(){calDate.setMonth(calDate.getMonth()+1);renderCal();}
+function renderCal(){
+  const y=calDate.getFullYear(),m=calDate.getMonth();
+  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-label').textContent=MONTHS[m]+' '+y;
+  const fd=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate(),dip=new Date(y,m,0).getDate(),td=tod();
+  let h='';['S','M','T','W','T','F','S'].forEach(d=>{h+=`<div class="caldow">${d}</div>`;});
+  for(let i=fd-1;i>=0;i--){h+=`<div class="calday othermonth"><div class="caldaynum">${dip-i}</div></div>`;}
+  for(let d=1;d<=dim;d++){
+    const ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const dj=DB.jobs.filter(j=>j.date===ds);
+    h+=`<div class="calday${ds===td?' today':''}${ds===calSel?' sel':''}" onclick="calSel='${ds}';renderCal()">
+      <div class="caldaynum">${d}</div>
+      ${dj.slice(0,3).map(j=>`<div class="jobdot" style="background:${SCOLORS[j.status]||'var(--green)'}"></div>`).join('')}
+    </div>`;
+  }
+  document.getElementById('cal-grid').innerHTML=h;
+  renderCalJobs();
+}
+function renderCalJobs(){
+  const dj=DB.jobs.filter(j=>j.date===calSel);
+  const [y,mo,d]=calSel.split('-');
+  const MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('cal-day-label').textContent=`${MO[parseInt(mo)-1]} ${parseInt(d)} — ${dj.length} Job${dj.length!==1?'s':''}`;
+  const el=document.getElementById('cal-jobs');
+  if(!dj.length){el.innerHTML=`<div style="font-size:13px;color:var(--t3);padding:1rem 0;text-align:center">No jobs scheduled</div>`;return;}
+  el.innerHTML=dj.map(j=>{
+    const c=DB.customers.find(x=>x.id===j.customerId);
+    const ts=j.startTime&&j.endTime?`${j.startTime}–${j.endTime}`:j.startTime||'';
+    return`<div class="caljobcard" onclick="openJobSh(${j.id})">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px;font-weight:700">${c?.name||'Unknown'}</span><span style="font-size:12px;font-family:var(--mono);color:var(--t2)">${ts}</span></div>
+      <div style="font-size:12px;color:var(--t3);margin-top:3px">${j.description||'No description'}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:5px">
+        <span class="badge ${SCLS[j.status]||'bs'}">${j.status}</span>
+        <span style="font-size:12px;font-family:var(--mono);color:var(--green)">${j.price||'—'}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openNewJob(){
+  let h=`<div class="stitle">Schedule New Job</div>`;
+  h+=`<div class="efield"><label>Customer</label><select id="nj-cust" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%"><option value="">Select customer...</option>${DB.customers.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select></div>`;
+  h+=`<div class="efield"><label>Date</label><input type="date" id="nj-date" value="${calSel}" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%"></div>`;
+  h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div class="efield"><label>Start Time</label><input type="time" id="nj-start" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%"></div><div class="efield"><label>End Time</label><input type="time" id="nj-end" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%"></div></div>`;
+  h+=`<div class="efield"><label>Technicians</label><select id="nj-tech" multiple style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%;min-height:70px">${DB.techs.map(t=>`<option value="${t.id}">${t.name}</option>`).join('')}</select><div style="font-size:11px;color:var(--t3);margin-top:3px">Hold to select multiple</div></div>`;
+  h+=`<div class="efield"><label>Price</label><input type="text" id="nj-price" placeholder="$0.00" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%"></div>`;
+  h+=`<div class="efield"><label>Description</label><textarea id="nj-desc" rows="2" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%;resize:none;line-height:1.5"></textarea></div>`;
+  h+=`<div class="efield"><label>Job Notes</label><textarea id="nj-notes" rows="2" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%;resize:none;line-height:1.5"></textarea></div>`;
+  h+=`<button class="btng" style="margin-top:4px" onclick="schedNewJob()">Schedule Job</button>`;
+  openSh(h);
+}
+
+function schedNewJob(){
+  const custId=parseInt(document.getElementById('nj-cust').value);
+  const date=document.getElementById('nj-date').value;
+  if(!custId||!date){showToast('Customer and date required');return;}
+  const cust=DB.customers.find(c=>c.id===custId);if(!cust)return;
+  const techSel=Array.from(document.getElementById('nj-tech').selectedOptions).map(o=>parseInt(o.value));
+  const techClocks={};techSel.forEach(id=>{techClocks[id]={clockIn:'',clockOut:'',synced:false};});
+  const job={id:jobNextId++,customerId:custId,date,startTime:document.getElementById('nj-start').value,endTime:document.getElementById('nj-end').value,technicianIds:techSel,techClocks,price:document.getElementById('nj-price').value,description:document.getElementById('nj-desc').value.trim(),notes:document.getElementById('nj-notes').value.trim(),status:'Scheduled',createdAt:new Date().toISOString()};
+  DB.jobs.push(job);cust.jobs=cust.jobs||[];cust.jobs.push(job.id);
+  if(cust.status==='Lead'||cust.status==='Quoted')cust.status='Scheduled';
+  saveAll();closeSh();calSel=date;renderCal();
+  showConf({icon:'📅',title:'Job Scheduled!',msg:`${cust.name} scheduled for ${date}.`,primaryLabel:'Great!'});
+}
+
+function openJobSh(jobId){
+  const job=DB.jobs.find(j=>j.id===jobId);if(!job)return;
+  const cust=DB.customers.find(c=>c.id===job.customerId);
+  const techNames=(job.technicianIds||[]).map(id=>DB.techs.find(t=>t.id===id)?.name||'').filter(Boolean).join(', ')||'Unassigned';
+  let h=`<div class="stitle">${cust?.name||'Job'}</div><div class="ssub">${job.date}${job.startTime?' · '+job.startTime:''}${job.endTime?' – '+job.endTime:''}</div>`;
+  h+=`<div class="dsec"><div class="dsectitle">Status</div><div class="pills" style="margin-top:4px">${STATUSES.map(s=>`<button class="pill${job.status===s?' on':''}" onclick="updJobStatus(${job.id},'${s}',this)">${s}</button>`).join('')}</div></div>`;
+  if(job.technicianIds&&job.technicianIds.length){
+    h+=`<div class="dsec"><div class="dsectitle">Technician Clock In/Out</div>`;
+    if(!job.techClocks)job.techClocks={};
+    job.technicianIds.forEach(techId=>{
+      const tech=DB.techs.find(t=>t.id===techId);if(!tech)return;
+      const clk=job.techClocks[techId]||{clockIn:'',clockOut:'',synced:false};
+      const isClockedIn=clk.clockIn&&!clk.clockOut;
+      const isDone=clk.clockIn&&clk.clockOut;
+      let hrs='';
+      if(isDone){const[ih,im]=clk.clockIn.split(':').map(Number),[oh,om]=clk.clockOut.split(':').map(Number);let diff=(oh*60+om)-(ih*60+im);if(diff<0)diff+=1440;hrs=fmtH(Math.round(diff/60*100)/100);}
+      h+=`<div class="clockrow">
+        <div>
+          <div class="clockname">${tech.name}</div>
+          <div class="clocktime">${clk.clockIn?'In: '+clk.clockIn:'Not clocked in'}${clk.clockOut?' · Out: '+clk.clockOut:''}${hrs?' · '+hrs:''}${clk.synced?' ✓':''}
+          </div>
+        </div>
+        <div style="display:flex;gap:5px">
+          ${!clk.clockIn?`<button class="btnsm g" onclick="techIn(${job.id},${techId})">Clock In</button>`:!clk.clockOut?`<button class="btnsm a" onclick="techOut(${job.id},${techId})">Clock Out</button>`:`<button class="btnsm o" onclick="techReset(${job.id},${techId})">Reset</button>`}
+        </div>
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+  if(cust?.address||cust?.property?.gate||cust?.property?.instructions){
+    h+=`<div class="dsec"><div class="dsectitle">Property</div>`;
+    if(cust.address)h+=`<div class="drow"><span class="dl">Address</span><span class="dv">${cust.address}</span></div>`;
+    if(cust.property?.gate)h+=`<div class="drow"><span class="dl">Gate/Access</span><span class="dv">${cust.property.gate}</span></div>`;
+    if(cust.property?.instructions)h+=`<div class="drow"><span class="dl">Instructions</span><span class="dv">${cust.property.instructions}</span></div>`;
+    h+=`</div>`;
+  }
+  if(job.description)h+=`<div class="dsec"><div class="dsectitle">Services</div><div style="font-size:13px;color:var(--t2);line-height:1.5">${job.description}</div></div>`;
+  if(job.notes)h+=`<div class="dsec"><div class="dsectitle">Job Notes</div><div style="font-size:13px;color:var(--t2);line-height:1.5">${job.notes}</div></div>`;
+  if(cust?.notes)h+=`<div class="dsec"><div class="dsectitle">Customer Notes</div><div style="font-size:13px;color:var(--t2);line-height:1.5">${cust.notes}</div></div>`;
+  h+=`<button class="btng" onclick="openCustProf(${job.customerId});closeSh()">View Customer Profile</button>`;
+  h+=`<button class="delbtn" onclick="delJobConf(${job.id})">Delete Job</button>`;
+  openSh(h);
+}
+
+function techIn(jobId,techId){
+  const job=DB.jobs.find(j=>j.id===jobId);if(!job)return;
+  if(!job.techClocks)job.techClocks={};
+  job.techClocks[techId]={clockIn:nowT(),clockOut:'',synced:false};
+  if(job.status==='Scheduled'){job.status='In Progress';const c=DB.customers.find(x=>x.id===job.customerId);if(c)c.status='In Progress';}
+  saveAll();openJobSh(jobId);showToast('Clocked in');
+}
+function techOut(jobId,techId){
+  const job=DB.jobs.find(j=>j.id===jobId);if(!job)return;
+  const clk=job.techClocks[techId];if(!clk)return;
+  clk.clockOut=nowT();syncToPayroll(job,techId,clk);
+  saveAll();openJobSh(jobId);showToast('Clocked out & synced to payroll ✓');
+}
+function techReset(jobId,techId){
+  const job=DB.jobs.find(j=>j.id===jobId);if(!job)return;
+  job.techClocks[techId]={clockIn:'',clockOut:'',synced:false};
+  saveAll();openJobSh(jobId);
+}
+function syncToPayroll(job,techId,clk){
+  const tech=DB.techs.find(t=>t.id===techId);if(!tech)return;
+  const ref=`JOB-${job.id}`;
+  const shift={date:job.date,clockIn:clk.clockIn,clockOut:clk.clockOut,jobRef:ref,jobDesc:job.description||'Job'};
+  const idx=tech.shifts.findIndex(s=>s.jobRef===ref);
+  if(idx>=0)tech.shifts[idx]=shift;else tech.shifts.push(shift);
+  clk.synced=true;
+}
+function updJobStatus(jobId,status,btn){
+  const job=DB.jobs.find(j=>j.id===jobId);if(!job)return;
+  job.status=status;
+  const c=DB.customers.find(x=>x.id===job.customerId);
+  if(c){if(status==='In Progress')c.status='In Progress';else if(status==='Completed')c.status='Completed';else if(status==='Invoiced')c.status='Invoiced';}
+  saveAll();document.querySelectorAll('#sh-content .pills .pill').forEach(b=>b.classList.remove('on'));btn.classList.add('on');showToast('Status → '+status);renderCalJobs();
+}
+function delJobConf(id){showConf({icon:'⚠️',title:'Delete Job?',msg:'This cannot be undone.',primaryLabel:'Delete',secondaryLabel:'Cancel',onPrimary:()=>{DB.jobs=DB.jobs.filter(j=>j.id!==id);saveAll();closeSh();renderCal();}});}
+
+function convQuoteToJob(custId,quoteId){
+  const cust=DB.customers.find(c=>c.id===custId);if(!cust)return;
+  const quote=cust.quotes.find(q=>q.id===quoteId);if(!quote)return;
+  let h=`<div class="stitle">Convert to Job</div>`;
+  h+=`<div style="background:var(--gd);border:1px solid var(--gb);border-radius:var(--rs);padding:10px 12px;margin-bottom:14px;font-size:13px;color:var(--green)">Quote: ${quote.grand} · ${(quote.items||[]).length} line items</div>`;
+  h+=`<div class="efield"><label>Date</label><input type="date" id="cj-date" value="${tod()}" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%"></div>`;
+  h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div class="efield"><label>Start Time</label><input type="time" id="cj-start" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%"></div><div class="efield"><label>End Time</label><input type="time" id="cj-end" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%"></div></div>`;
+  h+=`<div class="efield"><label>Technicians</label><select id="cj-tech" multiple style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%;min-height:70px">${DB.techs.map(t=>`<option value="${t.id}">${t.name}</option>`).join('')}</select></div>`;
+  h+=`<div class="efield"><label>Job Notes</label><textarea id="cj-notes" rows="2" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%;resize:none;line-height:1.5"></textarea></div>`;
+  h+=`<button class="btng" style="margin-top:4px" onclick="finConvert(${custId},${quoteId})">Schedule Job</button>`;
+  openSh(h);
+}
+function finConvert(custId,quoteId){
+  const cust=DB.customers.find(c=>c.id===custId);if(!cust)return;
+  const quote=cust.quotes.find(q=>q.id===quoteId);if(!quote)return;
+  const date=document.getElementById('cj-date').value;if(!date){showToast('Date required');return;}
+  const techSel=Array.from(document.getElementById('cj-tech').selectedOptions).map(o=>parseInt(o.value));
+  const techClocks={};techSel.forEach(id=>{techClocks[id]={clockIn:'',clockOut:'',synced:false};});
+  const services=(quote.items||[]).map(i=>iLabel(i)).join(' · ');
+  const job={id:jobNextId++,customerId:custId,date,startTime:document.getElementById('cj-start').value,endTime:document.getElementById('cj-end').value,technicianIds:techSel,techClocks,price:quote.grand,description:services,notes:document.getElementById('cj-notes').value.trim(),quoteId,status:'Scheduled',lineItems:JSON.parse(JSON.stringify(quote.items||[])),createdAt:new Date().toISOString()};
+  DB.jobs.push(job);cust.jobs=cust.jobs||[];cust.jobs.push(job.id);cust.status='Scheduled';
+  saveAll();closeSh();calSel=date;calDate=new Date(date+'T12:00:00');renderCal();
+  showConf({icon:'📅',title:'Job Scheduled!',msg:`${cust.name}'s job on ${date}.`,primaryLabel:'View Calendar',onPrimary:()=>document.querySelectorAll('.tab')[1].click()});
+}
+
+// ════════════════════════════════
+// CRM
+// ════════════════════════════════
+function renderCRM(){
+  const el=document.getElementById('crm-list');if(!el)return;
+  const q=(document.getElementById('crm-search')?.value||'').toLowerCase();
+  let list=DB.customers.filter(c=>!q||c.name.toLowerCase().includes(q)||(c.contacts||[]).some(x=>x.value.toLowerCase().includes(q))||(c.address||'').toLowerCase().includes(q));
+  list.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  if(!list.length){el.innerHTML=`<div style="font-size:13px;color:var(--t3);text-align:center;padding:2rem 0">No customers yet.<br>Save a quote or tap + New Customer.</div>`;return;}
+  el.innerHTML=list.map(c=>{
+    const spend=c.quotes.reduce((s,q)=>s+parseFloat((q.grand||'$0').replace('$','')),0);
+    const main=(c.contacts||[])[0];
+    const contactLine=[main?main.value:'',c.address?'📍 '+c.address:''].filter(Boolean).join('\n');
+    return`<div class="custcard" onclick="openCustProf(${c.id})">
+      <div class="cctop">
+        <div><div class="ccname">${c.name}</div><div class="cccontact">${contactLine}</div></div>
+        <span class="badge ${SCLS[c.status]||'bl'}">${c.status||'Lead'}</span>
+      </div>
+      <div class="ccbot"><span class="ccq">${(c.quotes||[]).length} quotes · ${(c.jobs||[]).length} jobs</span><span class="cctotal">${fmt(spend)}</span></div>
+    </div>`;
+  }).join('');
+}
+
+function openNewCustomer(){
+  const h=`<div class="stitle">New Customer</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div class="efield"><label>First Name</label><input type="text" id="nc-first" placeholder="Jane"></div><div class="efield"><label>Last Name</label><input type="text" id="nc-last" placeholder="Smith"></div></div>
+    <div class="efield"><label>Phone</label><input type="tel" id="nc-phone" placeholder="(555) 000-0000"></div>
+    <div class="efield"><label>Email</label><input type="email" id="nc-email" placeholder="jane@email.com"></div>
+    <div class="efield"><label>Address</label><input type="text" id="nc-address" placeholder="123 Main St..."></div>
+    <div class="efield"><label>Lead Source</label><select id="nc-source" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%"><option value="">Select...</option><option>Google</option><option>Referral</option><option>Door Knock</option><option>Social Media</option><option>Repeat Customer</option><option>Yelp</option><option>Nextdoor</option><option>Other</option></select></div>
+    <div class="efield"><label>Status</label><select id="nc-status" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%">${STATUSES.map(s=>`<option>${s}</option>`).join('')}</select></div>
+    <div class="efield"><label>Notes</label><textarea id="nc-notes" rows="2" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%;resize:none;line-height:1.5"></textarea></div>
+    <button class="btng" onclick="createCust()">Add Customer</button>`;
+  openSh(h);
+}
+function createCust(){
+  const first=document.getElementById('nc-first').value.trim(),last=document.getElementById('nc-last').value.trim();
+  const name=(first||last)?(first+' '+last).trim():'Customer';
+  const contacts=[];const ph=document.getElementById('nc-phone').value.trim(),em=document.getElementById('nc-email').value.trim();
+  if(ph)contacts.push({type:'Phone',value:ph});if(em)contacts.push({type:'Email',value:em});
+  DB.customers.push({id:custNextId++,name,status:document.getElementById('nc-status').value||'Lead',contacts,address:document.getElementById('nc-address').value.trim(),source:document.getElementById('nc-source').value,notes:document.getElementById('nc-notes').value.trim(),property:{gate:'',instructions:''},quotes:[],jobs:[],createdAt:new Date().toISOString()});
+  saveAll();closeSh();renderCRM();showConf({icon:'✅',title:'Customer Added!',msg:`${name} added to your CRM.`,primaryLabel:'OK'});
+}
+
+function openCustProf(custId){
+  const c=DB.customers.find(x=>x.id===custId);if(!c)return;
+  let h=`<div class="profhdr"><div class="av">${ini(c.name)}</div><div><div class="profname">${c.name}</div><div style="margin-top:3px"><span class="badge ${SCLS[c.status]||'bl'}">${c.status||'Lead'}</span>${c.source?' <span style="font-size:11px;color:var(--t3)">· '+c.source+'</span>':''}</div></div></div>`;
+  h+=`<div class="dsec"><div class="dsectitle">Status</div><div class="pills" style="margin-top:4px">${STATUSES.map(s=>`<button class="pill${c.status===s?' on':''}" onclick="updCustStatus(${c.id},'${s}',this)">${s}</button>`).join('')}</div></div>`;
+  h+=`<div class="dsec"><div class="dsectitle" style="display:flex;align-items:center;justify-content:space-between">Contacts <button class="btnsm b" style="font-size:10px;padding:3px 8px" onclick="openAddContact(${c.id})">＋ Add</button></div>`;
+  if(c.address){h+=`<div class="contactentry"><div class="ceinfo"><div class="cetype">Address</div><div class="ceval">${c.address}</div></div></div>`;}
+  (c.contacts||[]).forEach((con,i)=>{h+=`<div class="contactentry"><div class="ceinfo"><div class="cetype">${con.type}</div><div class="ceval">${con.value}</div></div><button class="cedel" onclick="remContact(${c.id},${i})">✕</button></div>`;});
+  if(!(c.contacts||[]).length&&!c.address)h+=`<div style="font-size:13px;color:var(--t3)">No contacts yet</div>`;
+  h+=`</div>`;
+  h+=`<div class="dsec"><div class="dsectitle">Customer Notes</div><textarea style="width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:13px;padding:8px 11px;outline:none;resize:none;overflow:hidden;line-height:1.5;min-height:2em" placeholder="Notes about this customer..." oninput="ae(this);saveCustNotes(${c.id},this.value)">${c.notes||''}</textarea></div>`;
+  h+=`<div class="dsec"><div class="dsectitle">Property Notes</div>
+    <div style="margin-bottom:8px"><div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:4px">Gate/Access</div><textarea style="width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:13px;padding:7px 10px;outline:none;resize:none;overflow:hidden;line-height:1.5;min-height:1.4em" placeholder="Gate code, key location..." oninput="ae(this);saveProp(${c.id},'gate',this.value)">${c.property?.gate||''}</textarea></div>
+    <div><div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:4px">Instructions</div><textarea style="width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:13px;padding:7px 10px;outline:none;resize:none;overflow:hidden;line-height:1.5;min-height:1.4em" placeholder="Dogs in yard, park on street..." oninput="ae(this);saveProp(${c.id},'instructions',this.value)">${c.property?.instructions||''}</textarea></div>
+  </div>`;
+  if((c.quotes||[]).length){
+    h+=`<div class="dsec"><div class="dsectitle">Quotes (${c.quotes.length})</div>`;
+    h+=c.quotes.slice().reverse().map(q=>`<div class="qcard" onclick="openQDetail(${c.id},${q.id})"><div class="qctop"><span class="qcdate">${q.date}</span><span class="qcamt">${q.grand}</span></div><div class="qcitems">${(q.items||[]).map(i=>iLabel(i)).join(' · ')||'No items'}</div><div style="margin-top:6px"><button class="btnsm g" style="font-size:10px;padding:3px 9px" onclick="event.stopPropagation();convQuoteToJob(${c.id},${q.id})">📅 Convert to Job</button></div></div>`).join('');
+    h+=`</div>`;
+  }
+  const custJobs=DB.jobs.filter(j=>j.customerId===c.id);
+  if(custJobs.length){
+    h+=`<div class="dsec"><div class="dsectitle">Jobs (${custJobs.length})</div>`;
+    h+=custJobs.slice().reverse().map(j=>`<div class="jobcard" onclick="openJobSh(${j.id})"><div class="jctop"><span class="jcdate">${j.date}${j.startTime?' · '+j.startTime:''}</span><span class="jcamt">${j.price||'—'}</span></div><div class="jcdesc">${j.description||'No description'}</div><div style="margin-top:5px"><span class="badge ${SCLS[j.status]||'bs'}">${j.status}</span></div></div>`).join('');
+    h+=`</div>`;
+  }
+  h+=`<button class="delbtn" onclick="delCustConf(${c.id})">Delete Customer</button>`;
+  openSh(h);setTimeout(()=>document.querySelectorAll('.sheet textarea').forEach(ae),50);
+}
+
+function updCustStatus(id,status,btn){const c=DB.customers.find(x=>x.id===id);if(!c)return;c.status=status;saveAll();document.querySelectorAll('#sh-content .pills .pill').forEach(b=>b.classList.remove('on'));btn.classList.add('on');showToast('Status → '+status);}
+function saveCustNotes(id,val){const c=DB.customers.find(x=>x.id===id);if(!c)return;c.notes=val;saveAll();}
+function saveProp(id,field,val){const c=DB.customers.find(x=>x.id===id);if(!c)return;if(!c.property)c.property={};c.property[field]=val;saveAll();}
+function openAddContact(custId){document.getElementById('sh-content').innerHTML=`<div class="stitle">Add Contact</div><div class="efield"><label>Type</label><select id="ac-type" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--t1);font-size:14px;padding:8px 11px;outline:none;width:100%"><option>Phone</option><option>Email</option><option>Additional Phone</option><option>Additional Email</option><option>Other</option></select></div><div class="efield"><label>Value</label><input type="text" id="ac-val" placeholder="Enter contact info..."></div><button class="btng" onclick="addContact(${custId})">Add</button>`;}
+function addContact(custId){const c=DB.customers.find(x=>x.id===custId);if(!c)return;const type=document.getElementById('ac-type').value,value=document.getElementById('ac-val').value.trim();if(!value){showToast('Enter a value');return;}if(!c.contacts)c.contacts=[];c.contacts.push({type,value});saveAll();openCustProf(custId);showToast('Contact added');}
+function remContact(custId,idx){const c=DB.customers.find(x=>x.id===custId);if(!c)return;c.contacts.splice(idx,1);saveAll();openCustProf(custId);}
+function openQDetail(custId,quoteId){
+  const c=DB.customers.find(x=>x.id===custId);if(!c)return;const q=c.quotes.find(x=>x.id===quoteId);if(!q)return;
+  const p=q.pricingSnapshot||getP();
+  let h=`<div class="stitle">${c.name} — ${q.grand}</div><div class="ssub">${q.date}</div>`;
+  if(q.items&&q.items.length){h+=`<div class="dsec"><div class="dsectitle">Line Items</div>`;q.items.forEach(item=>{h+=`<div class="drow"><span class="dl">${iLabel(item)}</span><span class="dv">${fmt(calcItem(item,p))}</span></div>`;});if(q.disc)h+=`<div class="drow" style="color:var(--red)"><span class="dl">Discount</span><span class="dv">−${q.disc}</span></div>`;h+=`<div class="drow" style="border-top:1px solid var(--b2);margin-top:4px;padding-top:7px"><span class="dl" style="font-weight:700;color:var(--t1)">Total</span><span class="dv" style="color:var(--green)">${q.grand}</span></div></div>`;}
+  if(q.notes)h+=`<div class="dsec"><div class="dsectitle">Notes</div><div style="font-size:13px;color:var(--t2);line-height:1.5">${q.notes}</div></div>`;
+  h+=`<button class="btng" onclick="convQuoteToJob(${custId},${quoteId})">📅 Convert to Job</button>`;
+  h+=`<button class="delbtn" onclick="delQConf(${custId},${quoteId})">Delete Quote</button>`;
+  openSh(h);
+}
+function delQConf(custId,qId){showConf({icon:'⚠️',title:'Delete Quote?',msg:'This cannot be undone.',primaryLabel:'Delete',secondaryLabel:'Cancel',onPrimary:()=>{const c=DB.customers.find(x=>x.id===custId);if(!c)return;c.quotes=c.quotes.filter(q=>q.id!==qId);saveAll();closeSh();openCustProf(custId);}});}
+function delCustConf(custId){const c=DB.customers.find(x=>x.id===custId);showConf({icon:'⚠️',title:'Delete Customer?',msg:`Delete ${c?.name} and all their data?`,primaryLabel:'Delete',secondaryLabel:'Cancel',onPrimary:()=>{DB.customers=DB.customers.filter(x=>x.id!==custId);DB.jobs=DB.jobs.filter(j=>j.customerId!==custId);saveAll();closeSh();renderCRM();}});}
+
+// ════════════════════════════════
+// PAYROLL
+// ════════════════════════════════
+function getPP(){const now=new Date(),y=now.getFullYear(),start=new Date(y,0,1),doy=Math.floor((now-start)/86400000),pn=Math.floor(doy/14),ps=new Date(start.getTime()+pn*14*86400000),pe=new Date(ps.getTime()+13*86400000);return{label:fmtDate(ps)+' – '+fmtDate(pe)};}
+function shiftHrs(s){if(!s.clockIn||!s.clockOut)return 0;const[ih,im]=s.clockIn.split(':').map(Number),[oh,om]=s.clockOut.split(':').map(Number);let d=(oh*60+om)-(ih*60+im);if(d<0)d+=1440;return Math.round(d/60*100)/100;}
+function calcOT(shifts){let reg=0,ot=0,dt=0;shifts.forEach(s=>{const h=shiftHrs(s);if(h<=8)reg+=h;else if(h<=12){reg+=8;ot+=h-8;}else{reg+=8;ot+=4;dt+=h-12;}});return{reg,ot,dt,total:reg+ot+dt};}
+function calcPay(tech){const rate=parseFloat(tech.rate)||0,{reg,ot,dt,total}=calcOT(tech.shifts||[]),base=reg*rate+ot*rate*1.5+dt*rate*2,tips=parseFloat(tech.tips)||0,bonus=parseFloat(tech.bonus)||0,reimb=parseFloat(tech.reimb)||0,deduct=parseFloat(tech.deduct)||0;return{reg,ot,dt,total,base,tips,bonus,reimb,deduct,gross:base+tips+bonus+reimb-deduct};}
+function addTech(){const name=prompt('Technician name:');if(!name?.trim())return;const rate=parseFloat(prompt('Hourly rate ($):')||'0');DB.techs.push({id:techNextId++,name:name.trim(),rate,shifts:[],tips:0,bonus:0,reimb:0,deduct:0});saveAll();renderPayroll();}
+function delTech(id){if(!confirm('Remove technician?'))return;DB.techs=DB.techs.filter(t=>t.id!==id);saveAll();renderPayroll();}
+function updShift(techId,idx,field,val){const t=DB.techs.find(x=>x.id===techId);if(!t)return;t.shifts[idx][field]=val;saveAll();refTechCalc(techId);}
+function addShift(techId){const t=DB.techs.find(x=>x.id===techId);if(!t)return;t.shifts.push({date:'',clockIn:'',clockOut:''});saveAll();renderPayroll();}
+function remShift(techId,idx){const t=DB.techs.find(x=>x.id===techId);if(!t)return;t.shifts.splice(idx,1);saveAll();renderPayroll();}
+function updExtra(techId,field,val){const t=DB.techs.find(x=>x.id===techId);if(!t)return;t[field]=parseFloat(val)||0;saveAll();refTechCalc(techId);}
+function updRate(techId,val){const t=DB.techs.find(x=>x.id===techId);if(!t)return;t.rate=parseFloat(val)||0;saveAll();refTechCalc(techId);}
+function refTechCalc(techId){
+  const t=DB.techs.find(x=>x.id===techId);if(!t)return;const c=calcPay(t);const g=id=>document.getElementById(id);
+  if(g(`pt_reg_${techId}`))g(`pt_reg_${techId}`).textContent=fmtH(c.reg);
+  if(g(`pt_ot_${techId}`))g(`pt_ot_${techId}`).textContent=fmtH(c.ot);
+  if(g(`pt_dt_${techId}`))g(`pt_dt_${techId}`).textContent=fmtH(c.dt);
+  if(g(`pt_tot_${techId}`))g(`pt_tot_${techId}`).textContent=fmtH(c.total);
+  if(g(`pt_base_${techId}`))g(`pt_base_${techId}`).textContent=fmt(c.base);
+  if(g(`pt_gross_${techId}`))g(`pt_gross_${techId}`).textContent=fmt(c.gross);
+  if(g(`pt_hdr_${techId}`))g(`pt_hdr_${techId}`).textContent=fmt(c.gross);
+  t.shifts.forEach((s,i)=>{const el=g(`sh_${techId}_${i}`);if(el)el.textContent=shiftHrs(s)>0?fmtH(shiftHrs(s)):'';});
+}
+function renderPayroll(){
+  const pp=getPP();const pdEl=document.getElementById('pay-period');if(pdEl)pdEl.textContent=pp.label;
+  const tc=document.getElementById('techs-container');if(!tc)return;
+  if(!DB.techs.length){tc.innerHTML=`<div style="font-size:13px;color:var(--t3);text-align:center;padding:2rem 0">No technicians yet</div>`;
+  }else{
+    tc.innerHTML=DB.techs.map(tech=>{
+      const c=calcPay(tech),rate=parseFloat(tech.rate)||0;
+      return`<div class="ptcard open" id="pt_${tech.id}"><div class="pthdr" onclick="document.getElementById('pt_${tech.id}').classList.toggle('open')"><div><div class="ptname">${tech.name}</div><div class="ptmeta">$${rate}/hr · ${fmtH(c.total)}${c.ot>0?`<span class="otbadge">OT ${fmtH(c.ot)}</span>`:''}</div></div><div style="display:flex;align-items:center;gap:8px"><span style="font-size:14px;font-weight:700;font-family:var(--mono);color:var(--green)" id="pt_hdr_${tech.id}">${fmt(c.gross)}</span><span class="lichev">⌄</span></div></div>
+      <div class="ptbody">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0 6px"><span style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3)">Clock In / Out</span><div style="display:flex;align-items:center;gap:5px"><span style="font-size:11px;color:var(--t3)">$</span><input type="number" style="width:54px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--rf);color:var(--t1);font-family:var(--mono);font-size:13px;padding:3px 5px;outline:none;text-align:right" value="${rate}" oninput="updRate(${tech.id},this.value)"><span style="font-size:11px;color:var(--t3)">/hr</span></div></div>
+        ${tech.shifts.map((s,i)=>`<div class="shiftrow"><input type="text" class="shiftin" style="width:68px;font-size:11px" placeholder="MM/DD" value="${s.date||''}" oninput="updShift(${tech.id},${i},'date',this.value)"><input type="time" class="shiftin" value="${s.clockIn||''}" oninput="updShift(${tech.id},${i},'clockIn',this.value)"><span class="shift-sep" style="font-size:11px;color:var(--t3);flex-shrink:0">→</span><input type="time" class="shiftin" value="${s.clockOut||''}" oninput="updShift(${tech.id},${i},'clockOut',this.value)"><span class="shifthrs" id="sh_${tech.id}_${i}">${shiftHrs(s)>0?fmtH(shiftHrs(s)):''}</span>${s.jobRef?`<span style="font-size:10px;color:var(--purple)" title="${s.jobDesc||''}">📋</span>`:''}<button class="shiftdel" onclick="remShift(${tech.id},${i})">✕</button></div>`).join('')}
+        <button class="addshiftbtn" onclick="addShift(${tech.id})">＋ Add Day</button>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin:8px 0 6px">Hours</div>
+        <div class="statgrid"><div class="stat"><div class="statlabel">Regular</div><div class="statval" id="pt_reg_${tech.id}">${fmtH(c.reg)}</div></div><div class="stat"><div class="statlabel">Overtime 1.5x</div><div class="statval" style="color:var(--amber)" id="pt_ot_${tech.id}">${fmtH(c.ot)}</div></div><div class="stat"><div class="statlabel">Double Time 2x</div><div class="statval" style="color:var(--red)" id="pt_dt_${tech.id}">${fmtH(c.dt)}</div></div><div class="stat"><div class="statlabel">Total Hours</div><div class="statval" style="color:var(--green)" id="pt_tot_${tech.id}">${fmtH(c.total)}</div></div></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin:8px 0 6px">Pay</div>
+        <div class="extragrid"><div class="extra"><label>Tips ($)</label><input type="number" min="0" value="${tech.tips||0}" oninput="updExtra(${tech.id},'tips',this.value)"></div><div class="extra"><label>Bonus ($)</label><input type="number" min="0" value="${tech.bonus||0}" oninput="updExtra(${tech.id},'bonus',this.value)"></div><div class="extra"><label>Reimbursement ($)</label><input type="number" min="0" value="${tech.reimb||0}" oninput="updExtra(${tech.id},'reimb',this.value)"></div><div class="extra"><label>Deductions ($)</label><input type="number" min="0" value="${tech.deduct||0}" oninput="updExtra(${tech.id},'deduct',this.value)"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);padding:4px 0"><span>Base pay</span><span id="pt_base_${tech.id}" style="font-family:var(--mono)">${fmt(c.base)}</span></div>
+        <div class="netrow"><span class="netlabel">Gross Pay</span><span class="netval" id="pt_gross_${tech.id}">${fmt(c.gross)}</span></div>
+        <button class="delbtn" style="margin-top:8px" onclick="delTech(${tech.id})">Remove Technician</button>
+      </div></div>`;
+    }).join('');
+  }
+  const ph=document.getElementById('pay-hist');if(!ph)return;
+  if(!DB.payHist.length){ph.innerHTML=`<div style="font-size:13px;color:var(--t3);padding:1rem 0">No finalized pay periods yet</div>`;return;}
+  ph.innerHTML=DB.payHist.map(p=>{const total=p.techs.reduce((s,t)=>s+(t.calc?.gross||0),0);return`<div class="histcard" onclick="openHistDetail(${p.id})"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:500">${p.period}</span><span style="font-size:14px;font-weight:700;font-family:var(--mono);color:var(--green)">${fmt(total)}</span></div><div style="font-size:11px;color:var(--t3);margin-top:3px">${p.date} · ${p.techs.length} tech${p.techs.length!==1?'s':''}</div></div>`;}).join('');
+}
+function finalizePayroll(){
+  if(!DB.techs.length){showConf({icon:'⚠️',title:'No Technicians',msg:'Add at least one technician first.',primaryLabel:'OK'});return;}
+  const pp=getPP(),total=DB.techs.reduce((s,t)=>s+calcPay(t).gross,0);
+  DB.payHist.unshift({id:Date.now(),period:pp.label,date:new Date().toLocaleDateString(),techs:DB.techs.map(t=>({name:t.name,rate:t.rate,shifts:JSON.parse(JSON.stringify(t.shifts)),extras:{tips:t.tips,bonus:t.bonus,reimb:t.reimb,deduct:t.deduct},calc:calcPay(t)}))});
+  saveAll();showConf({icon:'✅',title:'Pay Period Saved!',msg:`${pp.label}\n${DB.techs.length} tech${DB.techs.length!==1?'s':''} · Total: ${fmt(total)}`,primaryLabel:'Done'});renderPayroll();
+}
+function openHistDetail(id){
+  const ph=DB.payHist.find(x=>x.id===id);if(!ph)return;
+  const total=ph.techs.reduce((s,t)=>s+(t.calc?.gross||0),0);
+  let h=`<div class="stitle">${ph.period}</div><div class="ssub">Saved ${ph.date}</div>`;
+  ph.techs.forEach(t=>{const c=t.calc||{};h+=`<div class="dsec"><div class="dsectitle">${t.name} — $${t.rate}/hr</div><div class="drow"><span class="dl">Regular</span><span class="dv">${fmtH(c.reg||0)}</span></div>${(c.ot||0)>0?`<div class="drow"><span class="dl">Overtime 1.5x</span><span class="dv" style="color:var(--amber)">${fmtH(c.ot)}</span></div>`:''}${(c.dt||0)>0?`<div class="drow"><span class="dl">Double Time 2x</span><span class="dv" style="color:var(--red)">${fmtH(c.dt)}</span></div>`:''}<div class="drow"><span class="dl">Base Pay</span><span class="dv">${fmt(c.base||0)}</span></div>${(t.extras?.tips||0)>0?`<div class="drow"><span class="dl">Tips</span><span class="dv">${fmt(t.extras.tips)}</span></div>`:''} ${(t.extras?.bonus||0)>0?`<div class="drow"><span class="dl">Bonus</span><span class="dv">${fmt(t.extras.bonus)}</span></div>`:''} ${(t.extras?.reimb||0)>0?`<div class="drow"><span class="dl">Reimbursement</span><span class="dv">${fmt(t.extras.reimb)}</span></div>`:''} ${(t.extras?.deduct||0)>0?`<div class="drow"><span class="dl">Deductions</span><span class="dv" style="color:var(--red)">−${fmt(t.extras.deduct)}</span></div>`:''}<div class="drow" style="border-top:1px solid var(--b2);margin-top:4px;padding-top:7px"><span class="dl" style="font-weight:700;color:var(--t1)">Gross Pay</span><span class="dv" style="color:var(--green)">${fmt(c.gross||0)}</span></div></div>`;});
+  h+=`<div class="netrow"><span class="netlabel">Total Payroll</span><span class="netval">${fmt(total)}</span></div>`;
+  h+=`<button class="delbtn" style="margin-top:10px" onclick="delHist(${ph.id})">Delete Record</button>`;
+  openSh(h);
+}
+function delHist(id){DB.payHist=DB.payHist.filter(x=>x.id!==id);saveAll();closeSh();renderPayroll();}
+
+// ════════════════════════════════
+// PRICING
+// ════════════════════════════════
+function savePricing(){
+  const fields=['sw_basic_both','sw_std_both','sw_prem_both','sw_basic_out','sw_std_out','sw_prem_out','sw_basic_in','sw_std_in','sw_prem_in','frn_basic_both','frn_std_both','frn_prem_both','frn_basic_out','frn_std_out','frn_prem_out','frn_basic_in','frn_std_in','frn_prem_in','hw_rate','m_sgd','m_gdn','m_bay','m_lrg','m_obs','m_hgh','m_sol','m_pst','gut_basic','gut_std','gut_prem','sol_basic','sol_std','sol_prem'];
+  DB.pricing={};fields.forEach(id=>{const el=document.getElementById(id);if(el)DB.pricing[id]=el.value;});
+  saveAll();showConf({icon:'✅',title:'Pricing Saved!',msg:'All prices and multipliers updated.',primaryLabel:'OK'});
+}
+
+// ════════════════════════════════
+// SHEET / CONFIRM / NAV
+// ════════════════════════════════
+function openSh(h){document.getElementById('sh-content').innerHTML=h;document.getElementById('sh-ov').classList.add('open');}
+function closeSh(e){if(e&&e.target!==document.getElementById('sh-ov'))return;document.getElementById('sh-ov').classList.remove('open');}
+let _cp=null,_cs=null;
+function showConf({icon='✅',title='',msg='',primaryLabel='OK',secondaryLabel=null,onPrimary=null,onSecondary=null}){
+  document.getElementById('ci').textContent=icon;document.getElementById('ct').textContent=title;document.getElementById('cm').textContent=msg;
+  document.getElementById('cpri').textContent=primaryLabel;
+  const s=document.getElementById('csec');if(secondaryLabel){s.style.display='block';s.textContent=secondaryLabel;}else s.style.display='none';
+  _cp=onPrimary;_cs=onSecondary;document.getElementById('conf-ov').classList.add('open');
+}
+function confP(){document.getElementById('conf-ov').classList.remove('open');if(_cp)_cp();_cp=null;}
+function confS(){document.getElementById('conf-ov').classList.remove('open');if(_cs)_cs();_cs=null;}
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('act'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('act'));
+  document.getElementById('page-'+id).classList.add('act');
+  btn.classList.add('act');
+  if(id==='calendar')renderCal();if(id==='crm')renderCRM();if(id==='payroll')renderPayroll();
+}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+// ════════════════════════════════
+// INIT
+// ════════════════════════════════
+function init(){
+  loadDB();
+  updateSum();
+  renderCal();
+}
+init();
+</script>
+</body>
+</html>
